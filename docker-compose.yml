@@ -1,0 +1,74 @@
+version: '3.5'
+
+services:
+  traefik:
+    image: traefik
+    command: --api --docker
+    ports:
+      - "80:80"
+      - 8080
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.frontend.rule=Host:monitor.josephlevarato.me"
+      - "traefik.backend=traefik"
+      - "traefik.port=8080"
+      - "traefik.docker.networks=default"
+      - "traefik.frontend.entryPoints=http,https"
+  portainer:
+    image: portainer/portainer:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainerdata:/data
+    labels:
+      - "traefik.frontend.rule=Host:docker.josephlevarato.me"
+      - "traefik.port=9000"
+      - "traefik.docker.networks=default"
+      - "traefik.protocol=http"
+  jenkins:
+    image: jenkins/jenkins
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - "/data/jenkins:/var/jenkins_home"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+      - "traefik.frontend.rule=Host:jenkins.josephlevarato.me"
+  gogs:
+    image: gogs/gogs
+    ports:
+      - "3000:3000"
+      - "10022:22"
+    volumes:
+      - "/var/gogs:/data"
+    labels:
+      - "traefik.docker.networks=default"
+      - "traefik.port=3000"
+      - "traefik.frontend.rule=Host:git.josephlevarato.me"
+  db:
+    image: mariadb:latest
+    restart: always
+    ports:
+      - 3306
+    environment:
+      - MYSQL_DATABASE=gogs
+      - MYSQL_USER=gogs
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=password
+    labels:
+      - "traefik.docker.networks=default"
+      - "traefik.port=3306"
+      - "traefik.backend=MariaDB"
+    networks:
+      - default
+
+volumes:
+  portainerdata:
+
+networks:
+  default:
+    external:
+      name: josephlevarato
