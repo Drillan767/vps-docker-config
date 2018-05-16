@@ -1,6 +1,7 @@
 version: '3.5'
 
 services:
+# Traefik is a reverse-proxy that allows you to match "localhost:8080" to "monitor.josephlevarato.me"
   traefik:
     image: traefik
     command: --api --docker
@@ -16,6 +17,7 @@ services:
       - "traefik.port=8080"
       - "traefik.docker.networks=default"
       - "traefik.frontend.entryPoints=http,https"
+# Portainer is a really nice GUI for Docker, even though I still prefer type commands on my console
   portainer:
     image: portainer/portainer:latest
     restart: unless-stopped
@@ -27,6 +29,7 @@ services:
       - "traefik.port=9000"
       - "traefik.docker.networks=default"
       - "traefik.protocol=http"
+# Working on it
   jenkins:
     image: jenkins/jenkins
     ports:
@@ -37,6 +40,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
       - "traefik.frontend.rule=Host:jenkins.josephlevarato.me"
+# Imagine Github. Now imagine Gitlab. Now imagine it on your own server. Exactly.
   gogs:
     image: gogs/gogs
     ports:
