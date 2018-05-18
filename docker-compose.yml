@@ -12,7 +12,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
-      - "traefik.frontend.rule=Host:monitor.josephlevarato.me"
+      ############################################
       - "traefik.backend=traefik"
       - "traefik.port=8080"
       - "traefik.docker.networks=default"
@@ -25,7 +25,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainerdata:/data
     labels:
-      - "traefik.frontend.rule=Host:docker.josephlevarato.me"
+      ############################################
       - "traefik.port=9000"
       - "traefik.docker.networks=default"
       - "traefik.protocol=http"
@@ -39,7 +39,7 @@ services:
       - "/data/jenkins:/var/jenkins_home"
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-      - "traefik.frontend.rule=Host:jenkins.josephlevarato.me"
+      ############################################
 # Imagine Github. Now imagine Gitlab. Now imagine it on your own server. Exactly.
   gogs:
     image: gogs/gogs
@@ -51,7 +51,7 @@ services:
     labels:
       - "traefik.docker.networks=default"
       - "traefik.port=3000"
-      - "traefik.frontend.rule=Host:git.josephlevarato.me"
+      ############################################
   db:
     image: mariadb:latest
     restart: always
@@ -63,8 +63,6 @@ services:
       - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=password
     labels:
-      - "traefik.docker.networks=default"
-      - "traefik.port=3306"
       - "traefik.backend=MariaDB"
     networks:
       - default
