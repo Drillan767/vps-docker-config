@@ -1,7 +1,7 @@
 version: '3.5'
 
 services:
-# Traefik is a reverse-proxy that allows you to match "localhost:8080" to "monitor.josephlevarato.me"
+# Traefik is a reverse-proxy that allows you to match "localhost:8080" to any domain name, as long as it targets your server's ip.
   traefik:
     image: traefik
     command: --api --docker
